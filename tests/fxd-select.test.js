@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { FxdSelect } from '../src/index.js';
+import { initFxdSelects } from '../src/auto.js';
 
 let container;
 
@@ -130,5 +131,61 @@ describe('FxdSelect', () => {
     items[0].click();
 
     expect(select.options[0].selected).toBe(true);
+  });
+
+  it('does not show checkmark on empty value option', () => {
+    const select = buildSelect(`
+      <select>
+        <option value="">Choose</option>
+        <option value="a">A</option>
+      </select>
+    `);
+
+    const fxd = new FxdSelect(select, { showCheckmark: true });
+    const items = fxd.ui.list.querySelectorAll('button.dropdown-item');
+    const firstCheck = items[0].querySelector('.fxd-checkmark');
+    const secondCheck = items[1].querySelector('.fxd-checkmark');
+    expect(firstCheck).toBeNull();
+    expect(secondCheck).not.toBeNull();
+  });
+
+  it('clears search input via search clear button', () => {
+    const select = buildSelect(`
+      <select>
+        <option value="a">Alpha</option>
+        <option value="b">Beta</option>
+      </select>
+    `);
+
+    const fxd = new FxdSelect(select, { searchClearable: true });
+    const input = fxd.ui.searchInput;
+    const clearBtn = fxd.ui.searchClearButton;
+    input.value = 'al';
+    input.dispatchEvent(new Event('input'));
+    clearBtn.click();
+    expect(input.value).toBe('');
+  });
+
+  it('does not open when select is disabled', () => {
+    const select = buildSelect(`
+      <select disabled>
+        <option value="a">A</option>
+      </select>
+    `);
+
+    const fxd = new FxdSelect(select);
+    fxd.ui.button.click();
+    expect(fxd.ui.menu.classList.contains('show')).toBe(false);
+  });
+
+  it('auto-init reads dataset options', () => {
+    container.innerHTML = `
+      <select data-fxd-select data-fxdsel-max-height="5" data-fxdsel-clearable="true">
+        <option value="a">A</option>
+      </select>
+    `;
+    initFxdSelects(container);
+    const wrapper = container.querySelector('.fxd-select');
+    expect(wrapper).not.toBeNull();
   });
 });

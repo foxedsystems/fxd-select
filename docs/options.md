@@ -9,6 +9,7 @@ All options are optional; defaults are shown below.
 
 - `clearable` (boolean, default: `false`)
   - Adds a clear button and enables `clear()` behavior.
+  - Note: not shown for multi-select.
 
 - `maxHeight` (string, default: `"12em"`)
   - Max height for the list container. Use `"auto"` for no limit.

@@ -89,7 +89,7 @@ export function render(selectEl, model, options, existingUi = null) {
 
     ui.control.appendChild(ui.button);
 
-    if (options.clearable) {
+    if (options.clearable && !selectEl.multiple) {
       ui.clearButton = document.createElement('button');
       ui.clearButton.type = 'button';
       ui.clearButton.className = options.clearButtonClass;
@@ -137,9 +137,9 @@ export function render(selectEl, model, options, existingUi = null) {
       ui.searchClearButton = searchClear;
     }
 
-    if (ui.clearButton && selectEl.multiple) {
-      ui.control.removeChild(ui.clearButton);
-      searchContainer.appendChild(ui.clearButton);
+    if (ui.clearButton && ui.clearButton.parentNode && ui.clearButton.parentNode !== ui.control) {
+      ui.clearButton.parentNode.removeChild(ui.clearButton);
+      ui.control.appendChild(ui.clearButton);
     }
 
     searchWrapper.appendChild(searchContainer);
@@ -208,7 +208,7 @@ export function render(selectEl, model, options, existingUi = null) {
       item.classList.add('is-selected');
     }
 
-    if (options.showCheckmark) {
+    if (options.showCheckmark && opt.value !== '') {
       const check = document.createElement('span');
       check.className = options.checkmarkClass;
       check.setAttribute('aria-hidden', 'true');
