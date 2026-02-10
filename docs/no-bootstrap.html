@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>fxd-select No-Bootstrap Demo</title>
+  <link href="./dist/fxd-select.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: "IBM Plex Sans", "Segoe UI", Tahoma, sans-serif;
+      padding: 2rem;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 520px;
+    }
+    .label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 0.5rem;
+    }
+    .fxd-select .form-select {
+      background: #0b1220;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      width: 100%;
+      text-align: left;
+    }
+    .fxd-select .dropdown-menu {
+      background: #0b1220;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 0.35rem;
+      min-width: 100%;
+    }
+    .fxd-select .dropdown-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.6rem;
+      border-radius: 6px;
+      color: #e2e8f0;
+      border: 0;
+      background: transparent;
+    }
+    .fxd-select .dropdown-item:hover,
+    .fxd-select .dropdown-item.active {
+      background: #1f2937;
+    }
+    .fxd-select .dropdown-header {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #64748b;
+      padding: 0.4rem 0.6rem;
+    }
+    .fxd-select .form-control {
+      background: #0b1220;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+    .fxd-select .btn {
+      background: #0b1220;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+    a {
+      color: #7dd3fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="label">No-Bootstrap Demo</div>
+    <select id="demo-basic">
+      <option value="">Choose a city</option>
+      <option value="nyc">New York</option>
+      <option value="la">Los Angeles</option>
+      <option value="chi">Chicago</option>
+    </select>
+    <p style="margin-top: 1rem;"><a href="./index.html">Back to main demo</a></p>
+  </div>
+
+  <script type="module">
+    import { FxdSelect } from './dist/fxd-select.esm.js';
+    new FxdSelect(document.querySelector('#demo-basic'), {
+      placeholder: 'Choose a city',
+      filterPlaceholder: 'Search',
+      warnOnMissingBootstrap: false,
+    });
+  </script>
+</body>
+</html>

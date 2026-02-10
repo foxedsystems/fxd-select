@@ -38,6 +38,7 @@
     <section class="hero">
       <h1 class="display-6 fw-semibold">fxd-select Demo</h1>
       <p class="lead">Bootstrap-friendly select enhancer with search, optgroups, and keyboard navigation.</p>
+      <p><a href="./no-bootstrap.html">View no-Bootstrap demo</a></p>
     </section>
 
     <section class="card p-4 mb-5">
@@ -104,6 +105,16 @@
         </div>
 
         <div>
+          <div class="demo-label">Selection Count Style</div>
+          <select id="demo-count" class="form-select" multiple>
+            <option value="alpha">Alpha</option>
+            <option value="beta">Beta</option>
+            <option value="gamma">Gamma</option>
+            <option value="delta">Delta</option>
+          </select>
+        </div>
+
+        <div>
           <div class="demo-label">Custom Render Option</div>
           <select id="demo-render" class="form-select">
             <option value="starter">Starter</option>
@@ -138,6 +149,14 @@
       clearable: true,
       maxDisplayItems: 2,
       placeholder: 'Pick drinks',
+    });
+
+    new FxdSelect(document.querySelector('#demo-count'), {
+      multiValueStyle: 'count',
+      selectionCountClass: 'badge bg-primary',
+      selectionCountTemplate: (count) => `${count} picks`,
+      clearable: true,
+      placeholder: 'Pick items',
     });
 
     new FxdSelect(document.querySelector('#demo-render'), {

@@ -19,8 +19,41 @@ function updateButtonLabel(ui, model, options, selectEl) {
   }
 
   if (selectEl.multiple) {
+    if (options.multiValueStyle === 'pills') {
+      const container = document.createElement('span');
+      container.className = options.pillContainerClass;
+
+      const max = Math.max(0, options.maxDisplayItems);
+      selected.slice(0, max).forEach((opt) => {
+        const pill = document.createElement('span');
+        pill.className = options.pillClass;
+        pill.textContent = opt.label;
+        container.appendChild(pill);
+      });
+
+      if (selected.length > max) {
+        const count = document.createElement('span');
+        count.className = options.selectionCountClass;
+        const tpl = options.selectionCountTemplate;
+        count.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+        container.appendChild(count);
+      }
+
+      ui.button.innerHTML = '';
+      ui.button.appendChild(container);
+      return;
+    }
+
+    if (options.multiValueStyle === 'count') {
+      const tpl = options.selectionCountTemplate;
+      const text = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+      ui.button.innerHTML = `<span class="${options.selectionCountClass}">${text}</span>`;
+      return;
+    }
+
     if (selected.length > options.maxDisplayItems) {
-      ui.button.textContent = `${selected.length} selected`;
+      const tpl = options.selectionCountTemplate;
+      ui.button.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
       return;
     }
     ui.button.textContent = selected.map((opt) => opt.label).join(', ');
@@ -55,7 +88,7 @@ export function render(selectEl, model, options, existingUi = null) {
       ui.clearButton.type = 'button';
       ui.clearButton.className = options.clearButtonClass;
       ui.clearButton.setAttribute('aria-label', options.clearButtonLabel);
-      ui.clearButton.textContent = '×';
+      ui.clearButton.textContent = options.clearButtonText;
       ui.control.appendChild(ui.clearButton);
     }
 
@@ -87,6 +120,17 @@ export function render(selectEl, model, options, existingUi = null) {
     searchInput.setAttribute('aria-label', options.filterPlaceholder);
 
     searchContainer.appendChild(searchInput);
+
+    if (options.searchClearable) {
+      const searchClear = document.createElement('button');
+      searchClear.type = 'button';
+      searchClear.className = `fxd-search-clear ${options.searchClearButtonClass}`;
+      searchClear.setAttribute('aria-label', options.searchClearAriaLabel);
+      searchClear.textContent = options.searchClearIcon;
+      searchContainer.appendChild(searchClear);
+      ui.searchClearButton = searchClear;
+    }
+
     searchWrapper.appendChild(searchContainer);
     ui.menu.appendChild(searchWrapper);
 
@@ -158,6 +202,12 @@ export function render(selectEl, model, options, existingUi = null) {
   });
 
   updateButtonLabel(ui, model, options, selectEl);
+
+  const isDisabled = selectEl.disabled;
+  ui.button.disabled = isDisabled;
+  if (ui.clearButton) ui.clearButton.disabled = isDisabled;
+  if (ui.searchInput) ui.searchInput.disabled = isDisabled;
+  if (ui.searchClearButton) ui.searchClearButton.disabled = isDisabled;
 
   return ui;
 }

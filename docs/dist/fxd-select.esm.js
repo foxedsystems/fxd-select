@@ -90,6 +90,30 @@ function dispatchEvent(el, name, detail = {}) {
   el.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }));
 }
 
+function warnIfMissingBootstrap(major = 5) {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  const rootStyles = getComputedStyle(document.documentElement);
+  const bsBodyColor = rootStyles.getPropertyValue('--bs-body-color').trim();
+
+  const probeMenu = document.createElement('div');
+  probeMenu.className = 'dropdown-menu';
+  probeMenu.style.position = 'absolute';
+  probeMenu.style.visibility = 'hidden';
+  document.body.appendChild(probeMenu);
+  const menuStyles = getComputedStyle(probeMenu);
+  document.body.removeChild(probeMenu);
+
+  const hasBootstrap = bsBodyColor.length > 0 && menuStyles.position === 'absolute';
+  if (!hasBootstrap) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `fxd-select: Bootstrap ${major}.x styles not detected. ` +
+      'The component will still work, but you should provide your own styles.'
+    );
+  }
+}
+
 function updateButtonLabel(ui, model, options, selectEl) {
   if (typeof options.renderValue === 'function') {
     const rendered = options.renderValue(model, selectEl);
@@ -109,8 +133,41 @@ function updateButtonLabel(ui, model, options, selectEl) {
   }
 
   if (selectEl.multiple) {
+    if (options.multiValueStyle === 'pills') {
+      const container = document.createElement('span');
+      container.className = options.pillContainerClass;
+
+      const max = Math.max(0, options.maxDisplayItems);
+      selected.slice(0, max).forEach((opt) => {
+        const pill = document.createElement('span');
+        pill.className = options.pillClass;
+        pill.textContent = opt.label;
+        container.appendChild(pill);
+      });
+
+      if (selected.length > max) {
+        const count = document.createElement('span');
+        count.className = options.selectionCountClass;
+        const tpl = options.selectionCountTemplate;
+        count.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+        container.appendChild(count);
+      }
+
+      ui.button.innerHTML = '';
+      ui.button.appendChild(container);
+      return;
+    }
+
+    if (options.multiValueStyle === 'count') {
+      const tpl = options.selectionCountTemplate;
+      const text = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+      ui.button.innerHTML = `<span class="${options.selectionCountClass}">${text}</span>`;
+      return;
+    }
+
     if (selected.length > options.maxDisplayItems) {
-      ui.button.textContent = `${selected.length} selected`;
+      const tpl = options.selectionCountTemplate;
+      ui.button.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
       return;
     }
     ui.button.textContent = selected.map((opt) => opt.label).join(', ');
@@ -145,7 +202,7 @@ function render(selectEl, model, options, existingUi = null) {
       ui.clearButton.type = 'button';
       ui.clearButton.className = options.clearButtonClass;
       ui.clearButton.setAttribute('aria-label', options.clearButtonLabel);
-      ui.clearButton.textContent = '×';
+      ui.clearButton.textContent = options.clearButtonText;
       ui.control.appendChild(ui.clearButton);
     }
 
@@ -177,6 +234,17 @@ function render(selectEl, model, options, existingUi = null) {
     searchInput.setAttribute('aria-label', options.filterPlaceholder);
 
     searchContainer.appendChild(searchInput);
+
+    if (options.searchClearable) {
+      const searchClear = document.createElement('button');
+      searchClear.type = 'button';
+      searchClear.className = `fxd-search-clear ${options.searchClearButtonClass}`;
+      searchClear.setAttribute('aria-label', options.searchClearAriaLabel);
+      searchClear.textContent = options.searchClearIcon;
+      searchContainer.appendChild(searchClear);
+      ui.searchClearButton = searchClear;
+    }
+
     searchWrapper.appendChild(searchContainer);
     ui.menu.appendChild(searchWrapper);
 
@@ -248,6 +316,12 @@ function render(selectEl, model, options, existingUi = null) {
   });
 
   updateButtonLabel(ui, model, options, selectEl);
+
+  const isDisabled = selectEl.disabled;
+  ui.button.disabled = isDisabled;
+  if (ui.clearButton) ui.clearButton.disabled = isDisabled;
+  if (ui.searchInput) ui.searchInput.disabled = isDisabled;
+  if (ui.searchClearButton) ui.searchClearButton.disabled = isDisabled;
 
   return ui;
 }
@@ -327,11 +401,12 @@ function bindEvents(fxd) {
   };
 
   const onButtonClick = (e) => {
+    if (selectEl.disabled) return;
     e.preventDefault();
     fxd.toggle();
     if (fxd.state.open) {
       focusSelectedOrFirst();
-      ui.searchInput?.focus();
+      ui.searchInput?.select();
     }
   };
 
@@ -344,6 +419,7 @@ function bindEvents(fxd) {
   const onItemClick = (e) => {
     const item = e.target.closest('button.dropdown-item');
     if (!item) return;
+    if (selectEl.disabled || item.disabled) return;
     if (selectEl.multiple) {
       const option = Array.from(selectEl.options).find((opt) => opt.value === item.dataset.value);
       if (option) {
@@ -406,6 +482,7 @@ function bindEvents(fxd) {
   };
 
   const onKeyDown = (e) => {
+    if (selectEl.disabled) return;
     const key = e.key;
     const openKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
     const navKeys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
@@ -414,6 +491,7 @@ function bindEvents(fxd) {
       e.preventDefault();
       fxd.open();
       focusSelectedOrFirst();
+      ui.searchInput?.select();
       return;
     }
 
@@ -427,6 +505,16 @@ function bindEvents(fxd) {
     }
 
     if (key === 'Enter') {
+      e.preventDefault();
+      const optionsList = getVisibleOptions();
+      const focused = optionsList[state.focusedIndex];
+      if (focused) {
+        focused.click();
+      }
+      return;
+    }
+
+    if (key === ' ') {
       e.preventDefault();
       const optionsList = getVisibleOptions();
       const focused = optionsList[state.focusedIndex];
@@ -461,12 +549,20 @@ function bindEvents(fxd) {
     fxd.clear();
   };
 
+  const onSearchClearClick = () => {
+    if (!ui.searchInput) return;
+    ui.searchInput.value = '';
+    ui.searchInput.dispatchEvent(new Event('input'));
+    ui.searchInput.select();
+  };
+
   ui.button.addEventListener('click', onButtonClick);
   ui.list.addEventListener('click', onItemClick);
   ui.list.addEventListener('mousemove', onItemHover);
   document.addEventListener('click', onDocumentClick);
   selectEl.addEventListener('change', onSelectChange);
   ui.searchInput?.addEventListener('input', onFilterInput);
+  ui.searchClearButton?.addEventListener('click', onSearchClearClick);
   ui.wrapper.addEventListener('keydown', onKeyDown);
   ui.clearButton?.addEventListener('click', onClearClick);
 
@@ -477,6 +573,7 @@ function bindEvents(fxd) {
     document.removeEventListener('click', onDocumentClick);
     selectEl.removeEventListener('change', onSelectChange);
     ui.searchInput?.removeEventListener('input', onFilterInput);
+    ui.searchClearButton?.removeEventListener('click', onSearchClearClick);
     ui.wrapper.removeEventListener('keydown', onKeyDown);
     ui.clearButton?.removeEventListener('click', onClearClick);
   };
@@ -501,6 +598,10 @@ class FxdSelect {
     this.cleanup = bindEvents(this);
 
     this.selectEl.classList.add('d-none');
+
+    if (this.options.warnOnMissingBootstrap) {
+      warnIfMissingBootstrap(this.options.bootstrapMajor);
+    }
 
     dispatchEvent(this.selectEl, 'fxd:init');
   }
@@ -596,8 +697,20 @@ FxdSelect.defaults = {
   load: null,
   loadDebounce: 250,
   maxDisplayItems: 3,
+  multiValueStyle: 'pills',
+  selectionCountClass: 'badge bg-secondary',
+  selectionCountTemplate: (count) => `${count} selected`,
+  pillClass: 'badge text-bg-light border',
+  pillContainerClass: 'fxd-pills',
   clearButtonClass: 'btn btn-outline-secondary btn-sm',
   clearButtonLabel: 'Clear selection',
+  clearButtonText: '×',
+  searchClearable: true,
+  searchClearButtonClass: 'btn btn-link btn-sm text-decoration-none',
+  searchClearIcon: '×',
+  searchClearAriaLabel: 'Clear search',
+  warnOnMissingBootstrap: true,
+  bootstrapMajor: 5,
   filter: null,
 };
 

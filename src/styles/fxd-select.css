@@ -12,3 +12,18 @@
 .fxd-select .dropdown-item.is-selected {
   font-weight: 600;
 }
+
+.fxd-pills {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.fxd-pills .badge {
+  font-weight: 500;
+}
+
+.fxd-search-clear {
+  line-height: 1;
+  padding: 0 0.25rem;
+}

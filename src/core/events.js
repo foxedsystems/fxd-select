@@ -42,11 +42,12 @@ export function bindEvents(fxd) {
   };
 
   const onButtonClick = (e) => {
+    if (selectEl.disabled) return;
     e.preventDefault();
     fxd.toggle();
     if (fxd.state.open) {
       focusSelectedOrFirst();
-      ui.searchInput?.focus();
+      ui.searchInput?.select();
     }
   };
 
@@ -59,6 +60,7 @@ export function bindEvents(fxd) {
   const onItemClick = (e) => {
     const item = e.target.closest('button.dropdown-item');
     if (!item) return;
+    if (selectEl.disabled || item.disabled) return;
     if (selectEl.multiple) {
       const option = Array.from(selectEl.options).find((opt) => opt.value === item.dataset.value);
       if (option) {
@@ -121,6 +123,7 @@ export function bindEvents(fxd) {
   };
 
   const onKeyDown = (e) => {
+    if (selectEl.disabled) return;
     const key = e.key;
     const openKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
     const navKeys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
@@ -129,6 +132,7 @@ export function bindEvents(fxd) {
       e.preventDefault();
       fxd.open();
       focusSelectedOrFirst();
+      ui.searchInput?.select();
       return;
     }
 
@@ -142,6 +146,16 @@ export function bindEvents(fxd) {
     }
 
     if (key === 'Enter') {
+      e.preventDefault();
+      const optionsList = getVisibleOptions();
+      const focused = optionsList[state.focusedIndex];
+      if (focused) {
+        focused.click();
+      }
+      return;
+    }
+
+    if (key === ' ') {
       e.preventDefault();
       const optionsList = getVisibleOptions();
       const focused = optionsList[state.focusedIndex];
@@ -176,12 +190,20 @@ export function bindEvents(fxd) {
     fxd.clear();
   };
 
+  const onSearchClearClick = () => {
+    if (!ui.searchInput) return;
+    ui.searchInput.value = '';
+    ui.searchInput.dispatchEvent(new Event('input'));
+    ui.searchInput.select();
+  };
+
   ui.button.addEventListener('click', onButtonClick);
   ui.list.addEventListener('click', onItemClick);
   ui.list.addEventListener('mousemove', onItemHover);
   document.addEventListener('click', onDocumentClick);
   selectEl.addEventListener('change', onSelectChange);
   ui.searchInput?.addEventListener('input', onFilterInput);
+  ui.searchClearButton?.addEventListener('click', onSearchClearClick);
   ui.wrapper.addEventListener('keydown', onKeyDown);
   ui.clearButton?.addEventListener('click', onClearClick);
 
@@ -192,6 +214,7 @@ export function bindEvents(fxd) {
     document.removeEventListener('click', onDocumentClick);
     selectEl.removeEventListener('change', onSelectChange);
     ui.searchInput?.removeEventListener('input', onFilterInput);
+    ui.searchClearButton?.removeEventListener('click', onSearchClearClick);
     ui.wrapper.removeEventListener('keydown', onKeyDown);
     ui.clearButton?.removeEventListener('click', onClearClick);
   };

@@ -1,7 +1,7 @@
 import { buildModel } from './model.js';
 import { render } from './render.js';
 import { bindEvents } from './events.js';
-import { dispatchEvent } from './utils.js';
+import { dispatchEvent, warnIfMissingBootstrap } from './utils.js';
 
 export class FxdSelect {
   constructor(selectEl, options = {}) {
@@ -22,6 +22,10 @@ export class FxdSelect {
     this.cleanup = bindEvents(this);
 
     this.selectEl.classList.add('d-none');
+
+    if (this.options.warnOnMissingBootstrap) {
+      warnIfMissingBootstrap(this.options.bootstrapMajor);
+    }
 
     dispatchEvent(this.selectEl, 'fxd:init');
   }
@@ -117,7 +121,19 @@ FxdSelect.defaults = {
   load: null,
   loadDebounce: 250,
   maxDisplayItems: 3,
+  multiValueStyle: 'pills',
+  selectionCountClass: 'badge bg-secondary',
+  selectionCountTemplate: (count) => `${count} selected`,
+  pillClass: 'badge text-bg-light border',
+  pillContainerClass: 'fxd-pills',
   clearButtonClass: 'btn btn-outline-secondary btn-sm',
   clearButtonLabel: 'Clear selection',
+  clearButtonText: '×',
+  searchClearable: true,
+  searchClearButtonClass: 'btn btn-link btn-sm text-decoration-none',
+  searchClearIcon: '×',
+  searchClearAriaLabel: 'Clear search',
+  warnOnMissingBootstrap: true,
+  bootstrapMajor: 5,
   filter: null,
 };
