@@ -1,0 +1,14 @@
+:root {
+  --fxd-border: #dee2e6;
+  --fxd-bg: #fff;
+  --fxd-text: #212529;
+}
+
+.fxd-select .dropdown-item.active {
+  background-color: rgba(13, 110, 253, 0.15);
+  color: var(--fxd-text);
+}
+
+.fxd-select .dropdown-item.is-selected {
+  font-weight: 600;
+}
