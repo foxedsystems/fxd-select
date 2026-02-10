@@ -37,10 +37,10 @@ fxd-select is a lightweight, Bootstrap‑friendly select enhancer that adds sear
 
 ## Documentation
 
-- API: `docs/api.md`
-- Options: `docs/options.md`
-- Events: `docs/events.md`
-- Auto-init: `docs/auto-init.md`
+- API: [docs/api.md](docs/api.md)
+- Options: [docs/options.md](docs/options.md)
+- Events: [docs/events.md](docs/events.md)
+- Auto-init: [docs/auto-init.md](docs/auto-init.md)
 
 ## Demo
 

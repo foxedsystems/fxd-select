@@ -1,5 +1,7 @@
 # Auto-Init
 
+[API](./api.md) | [Options](./options.md) | [Events](./events.md) | [Auto-init](./auto-init.md) | [Demo](./index.html)
+
 For no-code or CMS environments, you can enable auto-initialization using
 `data-*` attributes or a CSS class.
 

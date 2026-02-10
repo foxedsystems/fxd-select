@@ -17,7 +17,7 @@
       border: 1px solid #1f2937;
       border-radius: 12px;
       padding: 1.5rem;
-      max-width: 520px;
+      max-width: 560px;
     }
     .label {
       font-size: 0.85rem;
@@ -25,6 +25,20 @@
       letter-spacing: 0.08em;
       color: #94a3b8;
       margin-bottom: 0.5rem;
+    }
+    .desc {
+      color: #cbd5f5;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    pre {
+      background: #0b1220;
+      border: 1px solid #1f2937;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      overflow: auto;
+      color: #e2e8f0;
     }
     .fxd-select .form-select {
       background: #0b1220;
@@ -80,12 +94,18 @@
 <body>
   <div class="card">
     <div class="label">No-Bootstrap Demo</div>
+    <div class="desc">This shows fxd-select without Bootstrap. Basic styles below make it usable in a custom design system.</div>
     <select id="demo-basic">
       <option value="">Choose a city</option>
       <option value="nyc">New York</option>
       <option value="la">Los Angeles</option>
       <option value="chi">Chicago</option>
     </select>
+    <pre><code>// Minimal init without Bootstrap
+new FxdSelect(document.querySelector('#demo-basic'), {
+  placeholder: 'Choose a city',
+  warnOnMissingBootstrap: false,
+});</code></pre>
     <p style="margin-top: 1rem;"><a href="./index.html">Back to main demo</a></p>
   </div>
 

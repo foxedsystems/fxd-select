@@ -453,11 +453,14 @@ function bindEvents(fxd) {
     if (!item) return;
     if (selectEl.disabled || item.disabled) return;
     if (selectEl.multiple) {
+      e.preventDefault();
+      e.stopPropagation();
       const option = Array.from(selectEl.options).find((opt) => opt.value === item.dataset.value);
       if (option) {
         option.selected = !option.selected;
       }
       selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+      requestAnimationFrame(() => fxd.open());
     } else {
       selectEl.value = item.dataset.value;
       selectEl.dispatchEvent(new Event('change', { bubbles: true }));

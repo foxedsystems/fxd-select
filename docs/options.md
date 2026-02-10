@@ -1,5 +1,7 @@
 # Options
 
+[API](./api.md) | [Options](./options.md) | [Events](./events.md) | [Auto-init](./auto-init.md) | [Demo](./index.html)
+
 All options are optional; defaults are shown below.
 
 ## Core

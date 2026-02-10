@@ -1,5 +1,7 @@
 # Events
 
+[API](./api.md) | [Options](./options.md) | [Events](./events.md) | [Auto-init](./auto-init.md) | [Demo](./index.html)
+
 All events are dispatched on the original `<select>` element.
 
 ## List
