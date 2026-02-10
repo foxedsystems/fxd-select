@@ -6,6 +6,7 @@
   "module": "dist/fxd-select.esm.js",
   "scripts": {
     "build": "rollup -c && node scripts/copy-css.mjs",
+    "build:docs": "node scripts/build-docs.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -1,5 +1,9 @@
 # fxd-select
 
+[![CI](https://github.com/foxedsystems/fxd-select/actions/workflows/ci.yml/badge.svg)](https://github.com/foxedsystems/fxd-select/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/fxd-select.svg)](https://www.npmjs.com/package/fxd-select)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A lightweight, Bootstrap-friendly select enhancer with local search and keyboard navigation.
 
 ## Install
@@ -130,7 +134,10 @@ Planned:
 ## Demo
 
 1. `npm run build`
-2. Open `demo/index.html` with a local static server to allow ES module imports.
+2. `npm run build:docs`
+3. Open `docs/index.html` with a local static server to allow ES module imports.
+
+For GitHub Pages, set the Pages source to the `docs/` folder.
 
 ## Build
 
