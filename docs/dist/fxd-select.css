@@ -13,6 +13,22 @@
   font-weight: 600;
 }
 
+.fxd-select .fxd-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.fxd-select .fxd-checkmark {
+  opacity: 0;
+  font-size: 0.9em;
+}
+
+.fxd-select .fxd-item.is-selected .fxd-checkmark {
+  opacity: 1;
+}
+
 .fxd-pills {
   display: inline-flex;
   gap: 0.35rem;

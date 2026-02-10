@@ -20,3 +20,12 @@ await copyFile(resolve(rootDist, 'fxd-select.esm.js.map'), resolve(docsDist, 'fx
 await copyFile(resolve(rootDist, 'fxd-select.esm.min.js.map'), resolve(docsDist, 'fxd-select.esm.min.js.map'));
 await copyFile(resolve(rootDist, 'fxd-select.umd.js.map'), resolve(docsDist, 'fxd-select.umd.js.map'));
 await copyFile(resolve(rootDist, 'fxd-select.umd.min.js.map'), resolve(docsDist, 'fxd-select.umd.min.js.map'));
+
+await copyFile(resolve(rootDist, 'fxd-select.auto.esm.js'), resolve(docsDist, 'fxd-select.auto.esm.js'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.esm.min.js'), resolve(docsDist, 'fxd-select.auto.esm.min.js'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.umd.js'), resolve(docsDist, 'fxd-select.auto.umd.js'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.umd.min.js'), resolve(docsDist, 'fxd-select.auto.umd.min.js'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.esm.js.map'), resolve(docsDist, 'fxd-select.auto.esm.js.map'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.esm.min.js.map'), resolve(docsDist, 'fxd-select.auto.esm.min.js.map'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.umd.js.map'), resolve(docsDist, 'fxd-select.auto.umd.js.map'));
+await copyFile(resolve(rootDist, 'fxd-select.auto.umd.min.js.map'), resolve(docsDist, 'fxd-select.auto.umd.min.js.map'));

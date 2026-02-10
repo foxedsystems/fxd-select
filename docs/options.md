@@ -51,6 +51,15 @@ All options are optional; defaults are shown below.
 - `searchClearAriaLabel` (string, default: `"Clear search"`)
   - ARIA label for the search clear button.
 
+- `showCheckmark` (boolean, default: `true`)
+  - Shows a right-aligned checkmark for selected items.
+
+- `checkmarkText` (string, default: `"✓"`)
+  - Checkmark text.
+
+- `checkmarkClass` (string, default: `"fxd-checkmark"`)
+  - CSS class for the checkmark element.
+
 - `pillClass` (string, default: `"badge text-bg-light border"`)
   - Classes applied to each selected pill.
 

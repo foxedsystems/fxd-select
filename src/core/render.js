@@ -24,18 +24,21 @@ function updateButtonLabel(ui, model, options, selectEl) {
       container.className = options.pillContainerClass;
 
       const max = Math.max(0, options.maxDisplayItems);
-      selected.slice(0, max).forEach((opt) => {
+      const visibleLimit = max + 1;
+      const visibleLabels = selected.slice(0, Math.min(selected.length, visibleLimit));
+      visibleLabels.forEach((opt) => {
         const pill = document.createElement('span');
         pill.className = options.pillClass;
         pill.textContent = opt.label;
         container.appendChild(pill);
       });
 
-      if (selected.length > max) {
+      const remaining = selected.length - visibleLabels.length;
+      if (remaining > 0) {
         const count = document.createElement('span');
         count.className = options.selectionCountClass;
         const tpl = options.selectionCountTemplate;
-        count.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+        count.textContent = typeof tpl === 'function' ? tpl(remaining) : `${remaining} selected`;
         container.appendChild(count);
       }
 
@@ -51,9 +54,12 @@ function updateButtonLabel(ui, model, options, selectEl) {
       return;
     }
 
-    if (selected.length > options.maxDisplayItems) {
+    const max = Math.max(0, options.maxDisplayItems);
+    const visibleLimit = max + 1;
+    if (selected.length > visibleLimit) {
+      const remaining = selected.length - visibleLimit;
       const tpl = options.selectionCountTemplate;
-      ui.button.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+      ui.button.textContent = typeof tpl === 'function' ? tpl(remaining) : `${remaining} selected`;
       return;
     }
     ui.button.textContent = selected.map((opt) => opt.label).join(', ');
@@ -131,6 +137,11 @@ export function render(selectEl, model, options, existingUi = null) {
       ui.searchClearButton = searchClear;
     }
 
+    if (ui.clearButton && selectEl.multiple) {
+      ui.control.removeChild(ui.clearButton);
+      searchContainer.appendChild(ui.clearButton);
+    }
+
     searchWrapper.appendChild(searchContainer);
     ui.menu.appendChild(searchWrapper);
 
@@ -174,7 +185,7 @@ export function render(selectEl, model, options, existingUi = null) {
 
     const item = document.createElement('button');
     item.type = 'button';
-    item.className = 'dropdown-item';
+    item.className = 'dropdown-item fxd-item';
     item.textContent = opt.label;
     item.dataset.value = opt.value;
     item.dataset.group = opt.group || '';
@@ -195,6 +206,14 @@ export function render(selectEl, model, options, existingUi = null) {
 
     if (opt.selected) {
       item.classList.add('is-selected');
+    }
+
+    if (options.showCheckmark) {
+      const check = document.createElement('span');
+      check.className = options.checkmarkClass;
+      check.setAttribute('aria-hidden', 'true');
+      check.textContent = options.checkmarkText;
+      item.appendChild(check);
     }
 
     ui.optionButtons.push(item);

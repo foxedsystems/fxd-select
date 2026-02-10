@@ -44,6 +44,15 @@ fxd.open();
 fxd.clear();
 ```
 
+### Auto-init via data attributes
+
+```html
+<select data-fxd-select data-fxdsel-max-height="8rem"></select>
+<script type="module">
+  import './dist/fxd-select.auto.esm.js';
+</script>
+```
+
 ### Multi-select with pills
 
 ```js

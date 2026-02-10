@@ -113,10 +113,10 @@ export function bindEvents(fxd) {
     }
 
     const filterFn = options.filter || defaultFilter;
-    const hiddenCount = applyFilter(ui.list, query, filterFn);
+    const result = applyFilter(ui.list, query, filterFn);
 
     if (ui.noResults) {
-      ui.noResults.classList.toggle('d-none', hiddenCount < ui.list.children.length);
+      ui.noResults.classList.toggle('d-none', result.visible > 0);
     }
 
     focusSelectedOrFirst();

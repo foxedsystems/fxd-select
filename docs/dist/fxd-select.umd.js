@@ -144,18 +144,21 @@
         container.className = options.pillContainerClass;
 
         const max = Math.max(0, options.maxDisplayItems);
-        selected.slice(0, max).forEach((opt) => {
+        const visibleLimit = max + 1;
+        const visibleLabels = selected.slice(0, Math.min(selected.length, visibleLimit));
+        visibleLabels.forEach((opt) => {
           const pill = document.createElement('span');
           pill.className = options.pillClass;
           pill.textContent = opt.label;
           container.appendChild(pill);
         });
 
-        if (selected.length > max) {
+        const remaining = selected.length - visibleLabels.length;
+        if (remaining > 0) {
           const count = document.createElement('span');
           count.className = options.selectionCountClass;
           const tpl = options.selectionCountTemplate;
-          count.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+          count.textContent = typeof tpl === 'function' ? tpl(remaining) : `${remaining} selected`;
           container.appendChild(count);
         }
 
@@ -171,9 +174,12 @@
         return;
       }
 
-      if (selected.length > options.maxDisplayItems) {
+      const max = Math.max(0, options.maxDisplayItems);
+      const visibleLimit = max + 1;
+      if (selected.length > visibleLimit) {
+        const remaining = selected.length - visibleLimit;
         const tpl = options.selectionCountTemplate;
-        ui.button.textContent = typeof tpl === 'function' ? tpl(selected.length) : `${selected.length} selected`;
+        ui.button.textContent = typeof tpl === 'function' ? tpl(remaining) : `${remaining} selected`;
         return;
       }
       ui.button.textContent = selected.map((opt) => opt.label).join(', ');
@@ -251,6 +257,11 @@
         ui.searchClearButton = searchClear;
       }
 
+      if (ui.clearButton && selectEl.multiple) {
+        ui.control.removeChild(ui.clearButton);
+        searchContainer.appendChild(ui.clearButton);
+      }
+
       searchWrapper.appendChild(searchContainer);
       ui.menu.appendChild(searchWrapper);
 
@@ -294,7 +305,7 @@
 
       const item = document.createElement('button');
       item.type = 'button';
-      item.className = 'dropdown-item';
+      item.className = 'dropdown-item fxd-item';
       item.textContent = opt.label;
       item.dataset.value = opt.value;
       item.dataset.group = opt.group || '';
@@ -315,6 +326,14 @@
 
       if (opt.selected) {
         item.classList.add('is-selected');
+      }
+
+      if (options.showCheckmark) {
+        const check = document.createElement('span');
+        check.className = options.checkmarkClass;
+        check.setAttribute('aria-hidden', 'true');
+        check.textContent = options.checkmarkText;
+        item.appendChild(check);
       }
 
       ui.optionButtons.push(item);
@@ -340,6 +359,7 @@
   function applyFilter(listEl, query, filterFn) {
     const groupState = new Map();
     let hidden = 0;
+    let visible = 0;
 
     Array.from(listEl.children).forEach((item) => {
       if (item.classList.contains('dropdown-header')) {
@@ -353,6 +373,7 @@
       const show = filterFn(query, option);
       item.classList.toggle('d-none', !show);
       if (!show) hidden += 1;
+      if (show) visible += 1;
 
       const groupKey = item.dataset.group || '';
       if (groupState.has(groupKey) && show) {
@@ -364,7 +385,7 @@
       header.classList.toggle('d-none', visible === 0);
     });
 
-    return hidden;
+    return { hidden, visible };
   }
 
   function bindEvents(fxd) {
@@ -478,10 +499,10 @@
       }
 
       const filterFn = options.filter || defaultFilter;
-      const hiddenCount = applyFilter(ui.list, query, filterFn);
+      const result = applyFilter(ui.list, query, filterFn);
 
       if (ui.noResults) {
-        ui.noResults.classList.toggle('d-none', hiddenCount < ui.list.children.length);
+        ui.noResults.classList.toggle('d-none', result.visible > 0);
       }
 
       focusSelectedOrFirst();
@@ -717,6 +738,9 @@
     searchClearAriaLabel: 'Clear search',
     warnOnMissingBootstrap: true,
     bootstrapMajor: 5,
+    showCheckmark: true,
+    checkmarkText: '✓',
+    checkmarkClass: 'fxd-checkmark',
     filter: null,
   };
 

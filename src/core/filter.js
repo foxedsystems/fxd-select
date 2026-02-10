@@ -6,6 +6,7 @@ export function defaultFilter(query, option) {
 export function applyFilter(listEl, query, filterFn) {
   const groupState = new Map();
   let hidden = 0;
+  let visible = 0;
 
   Array.from(listEl.children).forEach((item) => {
     if (item.classList.contains('dropdown-header')) {
@@ -19,6 +20,7 @@ export function applyFilter(listEl, query, filterFn) {
     const show = filterFn(query, option);
     item.classList.toggle('d-none', !show);
     if (!show) hidden += 1;
+    if (show) visible += 1;
 
     const groupKey = item.dataset.group || '';
     if (groupState.has(groupKey) && show) {
@@ -30,5 +32,5 @@ export function applyFilter(listEl, query, filterFn) {
     header.classList.toggle('d-none', visible === 0);
   });
 
-  return hidden;
+  return { hidden, visible };
 }

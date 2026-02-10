@@ -28,6 +28,7 @@ selectEl.addEventListener('fxd:change', () => {
 - The wrapper always has `fxd-select`.
 - Selected items get `is-selected`.
 - Active (focused) items get `active` (Bootstrap convention).
+- Checkmark uses `fxd-checkmark` and is shown via `is-selected`.
 
 ## Styling Example
 

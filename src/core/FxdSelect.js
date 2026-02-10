@@ -135,5 +135,8 @@ FxdSelect.defaults = {
   searchClearAriaLabel: 'Clear search',
   warnOnMissingBootstrap: true,
   bootstrapMajor: 5,
+  showCheckmark: true,
+  checkmarkText: '✓',
+  checkmarkClass: 'fxd-checkmark',
   filter: null,
 };
