@@ -7,104 +7,215 @@
   <link href="./dist/fxd-select.css" rel="stylesheet" />
   <style>
     body {
-      background: #0f172a;
-      color: #e2e8f0;
+      background: #f7f7f4;
+      color: #1f2328;
       font-family: "IBM Plex Sans", "Segoe UI", Tahoma, sans-serif;
       padding: 2rem;
     }
     .card {
-      background: #111827;
-      border: 1px solid #1f2937;
+      background: #fff;
+      border: 1px solid #e4e2dc;
       border-radius: 12px;
       padding: 1.5rem;
       max-width: 560px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
     }
     .label {
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #94a3b8;
+      color: #6b7280;
       margin-bottom: 0.5rem;
     }
     .desc {
-      color: #cbd5f5;
+      color: #475569;
       font-size: 0.95rem;
       margin-bottom: 1rem;
     }
     pre {
-      background: #0b1220;
-      border: 1px solid #1f2937;
+      background: #0f172a;
+      border: 1px solid #1e293b;
       padding: 0.75rem;
       border-radius: 8px;
       font-size: 0.8rem;
       overflow: auto;
       color: #e2e8f0;
+      margin-top: 0.75rem;
+      margin-bottom: 0;
     }
-    .fxd-select .form-select {
-      background: #0b1220;
-      color: #e2e8f0;
-      border: 1px solid #334155;
+    .code-label {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      font-weight: 600;
+    }
+    .nobs-select .nobs-btn {
+      background: #fff;
+      color: #1f2328;
+      border: 1px solid #cbd5e1;
       padding: 0.6rem 0.8rem;
       border-radius: 8px;
       width: 100%;
       text-align: left;
+      cursor: pointer;
     }
-    .fxd-select .dropdown-menu {
-      background: #0b1220;
-      border: 1px solid #1f2937;
+    .nobs-select .nobs-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 0.25rem);
+      left: 0;
+      z-index: 1000;
+      background: #fff;
+      border: 1px solid #cbd5e1;
       border-radius: 10px;
       padding: 0.35rem;
-      min-width: 100%;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
     }
-    .fxd-select .dropdown-item {
+    .nobs-select .nobs-menu.show {
+      display: block;
+    }
+    .d-none {
+      display: none !important;
+    }
+    .nobs-select {
+      position: relative;
+    }
+    .nobs-select .d-flex {
+      display: flex;
+    }
+    .nobs-select .align-items-center {
+      align-items: center;
+    }
+    .nobs-select .gap-1 {
+      gap: 0.25rem;
+    }
+    .nobs-select .flex-fill {
+      flex: 1 1 auto;
+    }
+    .nobs-select .w-auto {
+      width: auto;
+    }
+    .nobs-select .p-1 {
+      padding: 0.25rem;
+    }
+    .nobs-select .m-1 {
+      margin: 0.25rem;
+    }
+    .nobs-select .m-0 {
+      margin: 0;
+    }
+    .nobs-select .border-0 {
+      border: 0;
+    }
+    .nobs-select .rounded-0 {
+      border-radius: 0;
+    }
+    .nobs-select .shadow-none {
+      box-shadow: none;
+    }
+    .nobs-select .text-muted {
+      color: #64748b;
+    }
+    .nobs-select .px-2 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    .nobs-select .small {
+      font-size: 0.875rem;
+    }
+    .nobs-select .dropdown-item {
       display: block;
       width: 100%;
       text-align: left;
       padding: 0.5rem 0.6rem;
       border-radius: 6px;
-      color: #e2e8f0;
+      color: #1f2328;
       border: 0;
       background: transparent;
     }
-    .fxd-select .dropdown-item:hover,
-    .fxd-select .dropdown-item.active {
-      background: #1f2937;
+    .nobs-select .dropdown-item:hover,
+    .nobs-select .dropdown-item.active {
+      background: #e2e8f0;
     }
-    .fxd-select .dropdown-header {
+    .nobs-select .dropdown-header {
       font-size: 0.75rem;
       text-transform: uppercase;
       color: #64748b;
       padding: 0.4rem 0.6rem;
     }
-    .fxd-select .form-control {
-      background: #0b1220;
-      color: #e2e8f0;
-      border: 1px solid #334155;
+    .nobs-select .form-control {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
     }
-    .fxd-select .btn {
-      background: #0b1220;
-      color: #e2e8f0;
-      border: 1px solid #334155;
+    .nobs-select input.form-control {
+      background: transparent;
+      color: #1f2328;
+      border: 0;
+    }
+    .nobs-select .nobs-search-clear-btn {
+      border: 0;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .nobs-select .nobs-search-clear-btn:hover {
+      color: #1f2328;
+    }
+    .nobs-select .nobs-clear-btn {
+      background: #fff;
+      color: #1f2328;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 0.45rem 0.7rem;
+      cursor: pointer;
+    }
+    .nobs-select .nobs-clear-btn:hover {
+      background: #f8fafc;
     }
     a {
-      color: #7dd3fc;
+      color: #334155;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="label">No-Bootstrap Demo</div>
-    <div class="desc">This shows fxd-select without Bootstrap. Basic styles below make it usable in a custom design system.</div>
+    <div class="desc">This demo runs without Bootstrap CSS. The custom CSS and JS used here are shown below.</div>
     <select id="demo-basic">
       <option value="">Choose a city</option>
       <option value="nyc">New York</option>
       <option value="la">Los Angeles</option>
       <option value="chi">Chicago</option>
+      <option value="bos">Boston</option>
     </select>
-    <pre><code>// Minimal init without Bootstrap
-new FxdSelect(document.querySelector('#demo-basic'), {
+
+    <div class="code-label">No-Bootstrap CSS used in this page</div>
+    <pre><code>.nobs-select .nobs-btn { ... }
+.nobs-select .nobs-menu { ... }
+.nobs-select .form-control { ... }
+.nobs-select input.form-control { ... }
+.nobs-select .nobs-clear-btn { ... }
+.nobs-select .nobs-search-clear-btn { ... }
+.d-none { display: none !important; }</code></pre>
+    <div class="desc" style="margin-top: 0.75rem;">
+      Note: these utility fallbacks replace Bootstrap-only helpers used internally by the component (for visibility, layout, spacing, and muted text).
+    </div>
+
+    <div class="code-label">No-Bootstrap JS used in this page</div>
+    <pre><code>new FxdSelect(document.querySelector('#demo-basic'), {
   placeholder: 'Choose a city',
+  filterPlaceholder: 'Search',
+  clearable: true,
   warnOnMissingBootstrap: false,
+  wrapperClass: 'nobs-select',
+  buttonClass: 'nobs-btn',
+  menuClass: 'nobs-menu',
+  clearButtonClass: 'nobs-clear-btn',
+  searchClearButtonClass: 'nobs-search-clear-btn',
 });</code></pre>
     <p style="margin-top: 1rem;"><a href="./index.html">Back to main demo</a></p>
   </div>
@@ -115,6 +226,12 @@ new FxdSelect(document.querySelector('#demo-basic'), {
       placeholder: 'Choose a city',
       filterPlaceholder: 'Search',
       warnOnMissingBootstrap: false,
+      clearable: true,
+      wrapperClass: 'nobs-select',
+      buttonClass: 'nobs-btn',
+      menuClass: 'nobs-menu',
+      clearButtonClass: 'nobs-clear-btn',
+      searchClearButtonClass: 'nobs-search-clear-btn',
     });
   </script>
 </body>
